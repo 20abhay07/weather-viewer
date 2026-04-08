@@ -1,0 +1,15 @@
+# Windows files
+Thumbs.db
+Desktop.ini
+
+# Node / Editor
+.vscode/
+*.code-workspace
+
+# System files
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

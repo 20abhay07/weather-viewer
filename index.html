@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff9933" />
+  <title>Weather India</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="top-banner" aria-label="Make in India banner">
+      <span class="banner-chip">Make in India</span>
+    </section>
+
+    <section class="hero">
+      <h1>Weather India</h1>
+      <p>Check weather conditions across cities with a warm Indian-inspired interface.</p>
+      <div class="make-in-india-banner">Proudly Made in India 🇮🇳</div>
+    </section>
+
+    <section class="search-card">
+      <label for="city-input">City or place name</label>
+      <div class="search-row">
+        <input id="city-input" type="search" placeholder="e.g. Delhi, Mumbai, Bangalore" aria-describedby="helper-text" />
+        <button id="search-button" type="button">Search</button>
+      </div>
+      <p id="helper-text" class="helper-text">Search cities in India or anywhere in the world.</p>
+    </section>
+
+    <section id="result-card" class="result-card hidden" aria-live="polite" aria-atomic="true">
+      <div class="result-header">
+        <h2 id="location-name"></h2>
+        <p id="location-coordinates"></p>
+      </div>
+      <div class="weather-grid">
+        <div class="weather-item">
+          <span class="label">Temperature</span>
+          <strong id="temperature"></strong>
+        </div>
+        <div class="weather-item">
+          <span class="label">Condition</span>
+          <strong id="condition"></strong>
+        </div>
+        <div class="weather-item">
+          <span class="label">Wind Speed</span>
+          <strong id="wind-speed"></strong>
+        </div>
+        <div class="weather-item">
+          <span class="label">Humidity</span>
+          <strong id="humidity"></strong>
+        </div>
+      </div>
+      <div class="forecast-section">
+        <h3>Latest Forecast</h3>
+        <div id="forecast-list" class="forecast-list"></div>
+      </div>
+    </section>
+
+    <section id="error-message" class="error-card hidden" role="alert" aria-live="assertive"></section>
+
+    <footer class="page-footer">
+      <p>Designed with Indian classic style — no watermark, only weather.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
