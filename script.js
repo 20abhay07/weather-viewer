@@ -8,6 +8,9 @@ const temperatureEl = document.getElementById('temperature');
 const conditionEl = document.getElementById('condition');
 const windSpeedEl = document.getElementById('wind-speed');
 const humidityEl = document.getElementById('humidity');
+const aqiEl = document.getElementById('aqi');
+const sunriseEl = document.getElementById('sunrise');
+const sunsetEl = document.getElementById('sunset');
 const forecastList = document.getElementById('forecast-list');
 
 const weatherCodes = {
@@ -86,6 +89,7 @@ async function fetchWeather(latitude, longitude) {
     latitude: latitude.toString(),
     longitude: longitude.toString(),
     hourly: 'temperature_2m,weathercode,relativehumidity_2m',
+    daily: 'sunrise,sunset',
     current_weather: 'true',
     timezone: 'auto',
   });
@@ -96,7 +100,21 @@ async function fetchWeather(latitude, longitude) {
   return response.json();
 }
 
-function displayWeather(location, weatherData) {
+async function fetchAQI(latitude, longitude) {
+  const params = new URLSearchParams({
+    latitude: latitude.toString(),
+    longitude: longitude.toString(),
+    current: 'european_aqi',
+    timezone: 'auto',
+  });
+
+  const response = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?${params}`);
+  if (!response.ok) throw new Error('Unable to fetch AQI data.');
+
+  return response.json();
+}
+
+function displayWeather(location, weatherData, aqiData) {
   if (!weatherData.current_weather || !weatherData.hourly || !Array.isArray(weatherData.hourly.time)) {
     throw new Error('Incomplete weather data received.');
   }
@@ -112,6 +130,20 @@ function displayWeather(location, weatherData) {
   const nowIndex = weatherData.hourly.time.findIndex((time) => time === weatherData.current_weather.time);
   const humidityValue = nowIndex >= 0 ? weatherData.hourly.relativehumidity_2m[nowIndex] : null;
   humidityEl.textContent = humidityValue !== null ? `${humidityValue.toFixed(0)}%` : 'Not available';
+
+  aqiEl.textContent = aqiData && aqiData.current && aqiData.current.european_aqi !== undefined ? aqiData.current.european_aqi : 'N/A';
+
+  if (weatherData.daily && weatherData.daily.sunrise && weatherData.daily.sunrise[0]) {
+    sunriseEl.textContent = new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+  } else {
+    sunriseEl.textContent = 'N/A';
+  }
+
+  if (weatherData.daily && weatherData.daily.sunset && weatherData.daily.sunset[0]) {
+    sunsetEl.textContent = new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+  } else {
+    sunsetEl.textContent = 'N/A';
+  }
 
   forecastList.innerHTML = '';
   const forecastStart = nowIndex >= 0 ? nowIndex : 0;
@@ -149,8 +181,11 @@ async function onSearch() {
 
   try {
     const location = await lookupLocation(query);
-    const weatherData = await fetchWeather(location.latitude, location.longitude);
-    displayWeather(location, weatherData);
+    const [weatherData, aqiData] = await Promise.all([
+      fetchWeather(location.latitude, location.longitude),
+      fetchAQI(location.latitude, location.longitude).catch(() => null) // Allow AQI to fail gracefully
+    ]);
+    displayWeather(location, weatherData, aqiData);
   } catch (error) {
     showError(error.message || 'Something went wrong.');
     resultCard.classList.add('hidden');
