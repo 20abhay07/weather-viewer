@@ -248,13 +248,6 @@ button:active {
   display: none;
 }
 
-.page-footer {
-  margin-top: 28px;
-  color: var(--muted);
-  text-align: center;
-  font-size: 0.95rem;
-}
-
 @media (max-width: 720px) {
   .search-card,
   .result-card,
