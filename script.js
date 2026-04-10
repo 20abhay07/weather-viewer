@@ -115,6 +115,7 @@ async function fetchAQI(latitude, longitude) {
 }
 
 function displayWeather(location, weatherData, aqiData) {
+  console.log('Displaying weather data:', { weatherData, aqiData });
   if (!weatherData.current_weather || !weatherData.hourly || !Array.isArray(weatherData.hourly.time)) {
     throw new Error('Incomplete weather data received.');
   }
@@ -185,6 +186,7 @@ async function onSearch() {
       fetchWeather(location.latitude, location.longitude),
       fetchAQI(location.latitude, location.longitude).catch(() => null) // Allow AQI to fail gracefully
     ]);
+    console.log('Fetched data:', { location, weatherData, aqiData });
     displayWeather(location, weatherData, aqiData);
   } catch (error) {
     showError(error.message || 'Something went wrong.');
